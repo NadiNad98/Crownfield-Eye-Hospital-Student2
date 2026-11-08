@@ -1,87 +1,132 @@
 Crownfield Eye Hospital Database Project
 
-Course: CPU4:103 Introduction to Databases
+Module: CPU4:103 Introduction to Databases
+Project: Crownfield Eye Hospital Database
+Group: Three students
+Individual Role: Student 2 – Clinic and Appointment
 
-Assignment: Crownfield Eye Hospital Database Project
+Project Overview
 
-Student Name: Natalia Anna Winiarska
+This project was developed as part of the Introduction to Databases module. Working in a group of three students, we designed and implemented a relational database for Crownfield Eye Hospital using MySQL.
 
-Student ID: G1422923
+The database manages information about patients, clinicians, clinics, appointments, diagnoses, medicines, prescriptions and follow-up care.
 
-Group Role: Student 2
+The main database consists of 10 related tables. Two additional supporting tables are used to demonstrate appointment status auditing and data protection through hashing.
 
-About the Project
-
-This project is a MySQL database for Crownfield Eye Hospital. I worked in a group of three students to create a database with 10 main related tables and sample data.
-
-The database stores information about patients, clinicians, clinics, appointments, diagnoses, prescriptions, medicines and follow-up care.
-
-The updated database also includes two supporting tables for appointment status auditing and a hashing demonstration.
-
-My Individual Work
+My Individual Contribution
 
 As Student 2, I was responsible for the Clinic and Appointment tables.
 
-I created and tested six SQL features:
+My individual SQL work includes six required features:
 
-GROUP BY and HAVING
+GROUP BY and HAVING – counts appointments for each clinic and filters the results.
 
-INNER JOIN
+INNER JOIN – combines appointment, patient, clinician and clinic information.
 
-LEFT JOIN
+LEFT JOIN – identifies appointments without follow-up records.
 
-Subquery
+Subquery – identifies clinics with an above-average number of appointments.
 
-Stored procedure
+Stored Procedure – retrieves appointments for a selected clinic using an input parameter.
 
-Trigger
+Trigger – prevents appointments from being inserted without an appointment type.
 
-I also worked on the Receptionist and Patient roles and tested database validation, hashing and transactions. The project includes Admin and Doctor roles as part of the database security demonstration.
+I also demonstrated SQL transactions, validation tests, hashing and role-based database permissions.
 
-Project Files
+Database Design
 
-Crownfield_Group_Database.sql – the updated shared database containing 10 main related tables, sample data and additional supporting SQL features.
+The database uses primary keys and foreign keys to connect related tables and maintain referential integrity.
 
-Student2_Individual_SQL.sql – my six individual SQL features, stored procedure, trigger, security roles, hashing demonstration and transaction tests.
+The design includes constraints such as NOT NULL, UNIQUE, DEFAULT and CHECK, where appropriate.
 
-05_ERD_Ready_For_GitHub.drawio – an earlier editable ER diagram showing the 10 main tables and their relationships.
+The ER diagrams show the database tables, their attributes and relationships using Crow's Foot notation.
 
-Updated ER diagram image – shows the latest database structure, including 10 main tables, 2 additional supporting tables and the new fields added to the database.
+The project includes 10 main tables and 2 supporting tables:
 
-How to Use
+appointment_status_audit – records appointment status changes.
 
-Open MySQL Workbench.
+demo_protected_token – demonstrates the storage of hashed values.
 
-Run Crownfield_Group_Database.sql first to create the database and insert the sample data.
+Repository Files
 
-Run Student2_Individual_SQL.sql to execute my individual SQL queries, stored procedure, trigger and tests.
+File
 
-View the updated ER diagram image to see the latest database structure.
+Description
 
-The earlier .drawio diagram can be opened and edited using diagrams.net. The updated ER diagram image represents the latest database structure.
+Crownfield_Group_Database.sql
 
-Some SQL tests are commented out because they are expected to produce errors. They can be run separately to check that the database rules work correctly.
+Shared database script containing the database structure, sample records and additional SQL demonstrations.
 
-The role commands may require an account with permission to create roles and grant access.
+Student2_Individual_SQL.sql
 
-Important: The shared SQL script recreates database tables. It should be run in a dedicated test database because existing data may be overwritten.
+My individual SQL queries, stored procedure, trigger and security demonstrations.
 
-Assumptions
+ER Diagram (JPG)
 
-All patient and hospital records are fictional and used for educational purposes.
+Image of the database structure and relationships.
 
-The database is designed for MySQL and was tested using MySQL Workbench.
+ER Diagram (SVG)
 
-The group database file must be run before the individual SQL file.
+Scalable version of the database diagram.
 
-The database contains 10 main tables and 2 additional supporting tables.
+README.md
 
-The security roles demonstrate different access permissions but are not assigned to real hospital users.
+Project overview and instructions for running the database.
 
-Some validation tests are commented out because they are expected to produce errors.
+How to Run the Project
 
-The updated ER diagram image reflects the latest database structure, while the .drawio file is an earlier editable version.
+Requirements: MySQL Server and MySQL Workbench.
+
+Download the SQL files from this repository.
+
+Open MySQL Workbench and connect to a local MySQL server.
+
+Open and execute Crownfield_Group_Database.sql first.
+
+After the shared database script finishes, open and execute Student2_Individual_SQL.sql.
+
+Review the query results and test the stored procedure and trigger.
+
+Open either ER diagram to view the database structure.
+
+Important: The shared SQL script recreates database tables and may overwrite existing data. Run it in a dedicated test environment.
+
+Some negative validation tests are commented out because they are designed to produce errors when database rules are violated. These can be tested separately.
+
+Creating database roles and granting permissions may require an account with administrative privileges.
+
+Database Security and Testing
+
+The project demonstrates several database security and reliability features:
+
+Role-based permissions: Admin, Doctor, Receptionist and Patient roles with different levels of access.
+
+Hashing: Use of MySQL's SHA2() function to demonstrate one-way hashing.
+
+Transactions: Use of START TRANSACTION, COMMIT and ROLLBACK.
+
+Validation: Constraints and trigger-based checks to prevent invalid data.
+
+Controlled changes: SQL UPDATE and DELETE operations tested within transactions.
+
+The security features are educational demonstrations rather than a complete production hospital security system.
+
+Project Assumptions
+
+All hospital and patient information is fictional and used only for educational purposes.
+
+The database is designed for MySQL.
+
+The shared SQL script must be executed before the individual SQL script.
+
+The 10 main tables represent the core hospital database, while two supporting tables demonstrate additional features.
+
+The database roles are used to demonstrate access permissions and are not assigned to real hospital users.
+
+Both ER diagram files represent the same database design in different image formats.
 
 Conclusion
 
-This project helped me understand how relational databases work and how SQL can be used to manage hospital information. I also learned more about database relationships, validation, user permissions and transactions.
+This project helped me develop practical skills in relational database design, SQL queries, table relationships, data validation and database security.
+
+Working on the Clinic and Appointment tables also helped me understand how different parts of a hospital database connect and how SQL can be used to retrieve and manage information.
