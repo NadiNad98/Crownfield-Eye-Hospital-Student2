@@ -56,6 +56,18 @@ Some SQL tests are commented out because they are expected to produce errors. Th
 
 The role commands may require an account with permission to create roles and grant access.
 
+Assumptions
+
+All patient and hospital records are fictional and used for educational purposes.
+
+The database is designed for MySQL and was tested using MySQL Workbench.
+
+The group database file must be run before the individual SQL file.
+
+The security roles demonstrate different access permissions but are not assigned to real hospital users.
+
+Some validation tests are commented out because they are expected to produce errors.
+
 Conclusion
 
 This project helped me understand how relational databases work and how SQL can be used to manage hospital information. I also learned more about database relationships, validation, user permissions and transactions.
