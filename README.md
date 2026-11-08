@@ -1,132 +1,129 @@
-Crownfield Eye Hospital Database Project
+# Crownfield Eye Hospital Database Project
 
-Module: CPU4:103 Introduction to Databases
-Project: Crownfield Eye Hospital Database
-Group: Three students
+Module: CPU4:103 Introduction to Databases  
+Project: Crownfield Eye Hospital Database  
+Group: Three students  
 Individual Role: Student 2 – Clinic and Appointment
 
-Project Overview
+## Overview
 
 This project was developed as part of the Introduction to Databases module. Working in a group of three students, we designed and implemented a relational database for Crownfield Eye Hospital using MySQL.
 
-The database manages information about patients, clinicians, clinics, appointments, diagnoses, medicines, prescriptions and follow-up care.
+The database manages information about patients, clinicians, clinics, appointments, diagnoses, medicines, prescriptions, and follow-up care. The system is designed to support core hospital processes while demonstrating key database principles such as relational design, referential integrity, validation, and security.
 
-The main database consists of 10 related tables. Two additional supporting tables are used to demonstrate appointment status auditing and data protection through hashing.
+The project includes 10 core tables and 2 supporting tables. These additional tables are used to demonstrate appointment status auditing and data protection through hashing.
 
-My Individual Contribution
+## Project at a Glance
+
+| Item | Details |
+|------|---------|
+| Module | CPU4:103 Introduction to Databases |
+| Project | Crownfield Eye Hospital Database |
+| Group Size | 3 students |
+| Individual Role | Student 2 – Clinic and Appointment |
+| DBMS | MySQL |
+| Core Tables | 10 |
+| Supporting Tables | 2 |
+
+## Individual Contribution
 
 As Student 2, I was responsible for the Clinic and Appointment tables.
 
-My individual SQL work includes six required features:
+My individual SQL work includes the following required features:
 
-GROUP BY and HAVING – counts appointments for each clinic and filters the results.
+| Feature | Description |
+|---------|-------------|
+| `GROUP BY` + `HAVING` | Counts appointments for each clinic and filters the results |
+| `INNER JOIN` | Combines appointment, patient, clinician, and clinic information |
+| `LEFT JOIN` | Identifies appointments without follow-up records |
+| Subquery | Finds clinics with an above-average number of appointments |
+| Stored Procedure | Retrieves appointments for a selected clinic using an input parameter |
+| Trigger | Prevents appointments from being inserted without an appointment type |
 
-INNER JOIN – combines appointment, patient, clinician and clinic information.
+I also demonstrated additional database features, including:
 
-LEFT JOIN – identifies appointments without follow-up records.
+- SQL transactions
+- Validation tests
+- Hashing
+- Role-based database permissions
 
-Subquery – identifies clinics with an above-average number of appointments.
+## Database Design
 
-Stored Procedure – retrieves appointments for a selected clinic using an input parameter.
+The database uses primary keys and foreign keys to maintain referential integrity and connect related tables.
 
-Trigger – prevents appointments from being inserted without an appointment type.
+The design includes constraints such as:
 
-I also demonstrated SQL transactions, validation tests, hashing and role-based database permissions.
+- `NOT NULL`
+- `UNIQUE`
+- `DEFAULT`
+- `CHECK`
 
-Database Design
+The ER diagrams show the database tables, their attributes, and relationships using Crow's Foot notation.
 
-The database uses primary keys and foreign keys to connect related tables and maintain referential integrity.
+The project contains 10 main tables and 2 supporting tables:
 
-The design includes constraints such as NOT NULL, UNIQUE, DEFAULT and CHECK, where appropriate.
+| Table | Purpose |
+|-------|---------|
+| `appointment_status_audit` | Records appointment status changes |
+| `demo_protected_token` | Demonstrates the storage of hashed values |
 
-The ER diagrams show the database tables, their attributes and relationships using Crow's Foot notation.
+## Repository Files
 
-The project includes 10 main tables and 2 supporting tables:
+| File | Description |
+|------|-------------|
+| `Crownfield_Group_Database.sql` | Shared database script containing the database structure, sample records, and additional SQL demonstrations |
+| `Student2_Individual_SQL.sql` | Individual SQL queries, stored procedure, trigger, and security demonstrations |
+| `ER Diagram (JPG)` | Image of the database structure and relationships |
+| `ER Diagram (SVG)` | Scalable version of the database diagram |
+| `README.md` | Project overview and instructions for running the database |
 
-appointment_status_audit – records appointment status changes.
+## How to Run the Project
 
-demo_protected_token – demonstrates the storage of hashed values.
+### Requirements
 
-Repository Files
+- MySQL Server
+- MySQL Workbench
 
-File
+### Steps
 
-Description
+1. Download the SQL files from this repository.
+2. Open MySQL Workbench and connect to a local MySQL server.
+3. Open and execute `Crownfield_Group_Database.sql` first.
+4. After the shared script finishes, open and execute `Student2_Individual_SQL.sql`.
+5. Review the query results and test the stored procedure and trigger.
+6. Open either ER diagram to inspect the database structure.
 
-Crownfield_Group_Database.sql
-
-Shared database script containing the database structure, sample records and additional SQL demonstrations.
-
-Student2_Individual_SQL.sql
-
-My individual SQL queries, stored procedure, trigger and security demonstrations.
-
-ER Diagram (JPG)
-
-Image of the database structure and relationships.
-
-ER Diagram (SVG)
-
-Scalable version of the database diagram.
-
-README.md
-
-Project overview and instructions for running the database.
-
-How to Run the Project
-
-Requirements: MySQL Server and MySQL Workbench.
-
-Download the SQL files from this repository.
-
-Open MySQL Workbench and connect to a local MySQL server.
-
-Open and execute Crownfield_Group_Database.sql first.
-
-After the shared database script finishes, open and execute Student2_Individual_SQL.sql.
-
-Review the query results and test the stored procedure and trigger.
-
-Open either ER diagram to view the database structure.
-
-Important: The shared SQL script recreates database tables and may overwrite existing data. Run it in a dedicated test environment.
+> Important: The shared SQL script recreates the database tables and may overwrite existing data. Run it in a dedicated test environment.
 
 Some negative validation tests are commented out because they are designed to produce errors when database rules are violated. These can be tested separately.
 
 Creating database roles and granting permissions may require an account with administrative privileges.
 
-Database Security and Testing
+## Database Security and Testing
 
 The project demonstrates several database security and reliability features:
 
-Role-based permissions: Admin, Doctor, Receptionist and Patient roles with different levels of access.
-
-Hashing: Use of MySQL's SHA2() function to demonstrate one-way hashing.
-
-Transactions: Use of START TRANSACTION, COMMIT and ROLLBACK.
-
-Validation: Constraints and trigger-based checks to prevent invalid data.
-
-Controlled changes: SQL UPDATE and DELETE operations tested within transactions.
+| Feature | Description |
+|---------|-------------|
+| Role-based permissions | Admin, Doctor, Receptionist, and Patient roles with different levels of access |
+| Hashing | Use of MySQL `SHA2()` function to demonstrate one-way hashing |
+| Transactions | Use of `START TRANSACTION`, `COMMIT`, and `ROLLBACK` |
+| Validation | Constraints and trigger-based checks to prevent invalid data |
+| Controlled changes | SQL `UPDATE` and `DELETE` operations tested within transactions |
 
 The security features are educational demonstrations rather than a complete production hospital security system.
 
-Project Assumptions
+## Project Assumptions
 
-All hospital and patient information is fictional and used only for educational purposes.
+- All hospital and patient information is fictional and used only for educational purposes.
+- The database is designed for MySQL.
+- The shared SQL script must be executed before the individual SQL script.
+- The 10 main tables represent the core hospital database, while the two supporting tables demonstrate additional features.
+- The database roles are used to demonstrate access permissions and are not assigned to real hospital users.
+- Both ER diagram files represent the same database design in different image formats.
 
-The database is designed for MySQL.
+## Conclusion
 
-The shared SQL script must be executed before the individual SQL script.
+This project helped me develop practical skills in relational database design, SQL queries, table relationships, data validation, and database security.
 
-The 10 main tables represent the core hospital database, while two supporting tables demonstrate additional features.
-
-The database roles are used to demonstrate access permissions and are not assigned to real hospital users.
-
-Both ER diagram files represent the same database design in different image formats.
-
-Conclusion
-
-This project helped me develop practical skills in relational database design, SQL queries, table relationships, data validation and database security.
-
-Working on the Clinic and Appointment tables also helped me understand how different parts of a hospital database connect and how SQL can be used to retrieve and manage information.
+Working on the Clinic and Appointment tables also helped me understand how different parts of a hospital database connect and how SQL can be used to retrieve and manage information efficiently.
