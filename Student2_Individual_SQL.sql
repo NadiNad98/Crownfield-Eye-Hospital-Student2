@@ -115,3 +115,22 @@ START TRANSACTION;
 UPDATE appointment SET Status = 'Scheduled' WHERE Appointment_ID = 1;
 COMMIT;
 SELECT Appointment_ID, Status FROM appointment WHERE Appointment_ID = 1;
+
+GRANT ALL PRIVILEGES
+ON crownfield_ro_pl_demo.*
+TO 'admin_role';
+
+SHOW GRANTS FOR 'admin_role';
+
+-- Doctor role
+-- Doctors can view patient details and manage clinical records.
+CREATE ROLE IF NOT EXISTS 'doctor_role';
+
+GRANT SELECT ON crownfield_ro_pl_demo.patient TO 'doctor_role';
+GRANT SELECT ON crownfield_ro_pl_demo.clinician TO 'doctor_role';
+GRANT SELECT, UPDATE ON crownfield_ro_pl_demo.appointment TO 'doctor_role';
+GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.diagnosis TO 'doctor_role';
+GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.prescription TO 'doctor_role';
+GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.prescription_item TO 'doctor_role';
+
+SHOW GRANTS FOR 'doctor_role';
