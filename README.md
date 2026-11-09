@@ -38,7 +38,7 @@ My individual SQL work includes the following required features:
 | `LEFT JOIN` | Identifies appointments without follow-up records |
 | Subquery | Finds clinics with an above-average number of appointments |
 | Stored Procedure | Retrieves appointments for a selected clinic using an input parameter |
-| Trigger | Prevents appointments from being inserted without an appointment type |
+| Trigger | Rejects appointments with leading or trailing spaces in the Status field. |
 
 I also demonstrated additional database features, including:
 
