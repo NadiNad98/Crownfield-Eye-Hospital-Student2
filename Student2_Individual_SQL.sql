@@ -1,136 +1,230 @@
+Logu.
 
 -- Crownfield Eye Hospital
 -- Student 2 - Clinic and Appointment
--- My SQL queries and tests
--- Run the group database file first.
+-- Individual SQL queries and tests
+-- Run the group database script first.
 
-USE crownfield_ro_pl_demo;
+USE crownfield_eye_hospital;
 
 -- 1. GROUP BY and HAVING
--- I used this query to find clinics with more than one appointment.
-SELECT c.Clinic_Name, COUNT(a.Appointment_ID) AS Total_Appointments
+-- Find clinics with more than one appointment.
+SELECT c.Clinic_Name,
+       COUNT(a.Appointment_ID) AS Total_Appointments
 FROM clinic c
 JOIN appointment a ON c.Clinic_ID = a.Clinic_ID
 GROUP BY c.Clinic_ID, c.Clinic_Name
 HAVING COUNT(a.Appointment_ID) > 1;
 
+
 -- 2. INNER JOIN
--- This shows the patient, clinician and clinic for each appointment.
-SELECT a.Appointment_ID, p.First_Name AS Patient,
-       c.First_Name AS Clinician, cl.Clinic_Name
+-- Show the patient, clinician and clinic for each appointment.
+SELECT a.Appointment_ID,
+       p.First_Name AS Patient,
+       c.First_Name AS Clinician,
+       cl.Clinic_Name
 FROM appointment a
 JOIN patient p ON a.Patient_ID = p.Patient_ID
 JOIN clinician c ON a.Clinician_ID = c.Clinician_ID
 JOIN clinic cl ON a.Clinic_ID = cl.Clinic_ID;
 
+
 -- 3. LEFT JOIN
--- I checked which appointments do not have a follow-up.
-SELECT a.Appointment_ID, a.Appointment_Date
+-- Find appointments without a follow-up record.
+SELECT a.Appointment_ID,
+       a.Appointment_Date
 FROM appointment a
-LEFT JOIN follow_up f ON a.Appointment_ID = f.Appointment_ID
+LEFT JOIN follow_up f
+    ON a.Appointment_ID = f.Appointment_ID
 WHERE f.Follow_Up_ID IS NULL;
 
+
 -- 4. Subquery
--- This finds clinics with more appointments than the average.
-SELECT c.Clinic_Name, COUNT(a.Appointment_ID) AS Total
+-- Find clinics with above-average appointment numbers.
+SELECT c.Clinic_Name,
+       COUNT(a.Appointment_ID) AS Total
 FROM clinic c
-LEFT JOIN appointment a ON c.Clinic_ID = a.Clinic_ID
+LEFT JOIN appointment a
+    ON c.Clinic_ID = a.Clinic_ID
 GROUP BY c.Clinic_ID, c.Clinic_Name
 HAVING COUNT(a.Appointment_ID) >
-    (SELECT COUNT(*) / (SELECT COUNT(*) FROM clinic) FROM appointment);
+    (
+        SELECT COUNT(*) /
+               (SELECT COUNT(*) FROM clinic)
+        FROM appointment
+    );
+
 
 -- 5. Stored procedure
--- I created a procedure to see appointments for a selected clinic.
-DROP PROCEDURE IF EXISTS GetClinicAppointments;
+-- List appointments for a selected clinic.
+DROP PROCEDURE IF EXISTS Student2_GetClinicAppointments;
+
 DELIMITER //
-CREATE PROCEDURE GetClinicAppointments(IN p_clinic_id INT)
+
+CREATE PROCEDURE Student2_GetClinicAppointments(
+    IN p_clinic_id INT
+)
 BEGIN
-    SELECT Appointment_ID, Appointment_Date, Appointment_Time, Status
+    SELECT Appointment_ID,
+           Appointment_Date,
+           Appointment_Time,
+           Status
     FROM appointment
     WHERE Clinic_ID = p_clinic_id;
 END//
+
 DELIMITER ;
 
--- I tested it using Clinic_ID 1.
-CALL GetClinicAppointments(1);
+-- Test with Clinic_ID 1.
+CALL Student2_GetClinicAppointments(1);
+
 
 -- 6. Trigger
--- This stops an appointment being added without an appointment type.
-DROP TRIGGER IF EXISTS CheckAppointmentType;
+-- Reject appointment statuses with surrounding spaces.
+DROP TRIGGER IF EXISTS Student2_Appointment_Status_Trim;
+
 DELIMITER //
-CREATE TRIGGER CheckAppointmentType
+
+CREATE TRIGGER Student2_Appointment_Status_Trim
 BEFORE INSERT ON appointment
 FOR EACH ROW
 BEGIN
-    IF NEW.Appointment_Type IS NULL OR TRIM(NEW.Appointment_Type) = '' THEN
+    IF NEW.Status <> TRIM(NEW.Status) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Appointment type is required';
+        SET MESSAGE_TEXT =
+            'Appointment status must not have surrounding spaces';
     END IF;
 END//
+
 DELIMITER ;
 
--- Trigger test: I ran this separately to check that it gives an error.
--- It is commented out here because the test is supposed to fail.
+-- Trigger test (expected to fail with Error 1644).
+-- Run separately when demonstrating the trigger.
 -- INSERT INTO appointment
--- (Appointment_ID, Patient_ID, Clinician_ID, Clinic_ID,
---  Appointment_Date, Appointment_Time, Appointment_Type, Status)
--- VALUES (9999, 'OP001', 1, 1, '2026-12-20', '10:00:00', NULL, 'Scheduled');
+-- (Patient_ID, Clinician_ID, Clinic_ID,
+--  Appointment_Date, Appointment_Time, Status)
+-- VALUES
+-- ('OP001', 1, 1, '2026-12-15', '10:00:00', ' Scheduled ');
 
--- Testing database rules
--- These tests should give errors, so I left them commented out.
--- UPDATE appointment SET Status = 'Unknown' WHERE Appointment_ID = 1;
--- DELETE FROM clinic WHERE Clinic_ID = 1;
 
--- Receptionist role
--- I gave receptionists access to view, add and update appointments and patients.
-CREATE ROLE IF NOT EXISTS 'receptionist_role';
-GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.appointment TO 'receptionist_role';
-GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.patient TO 'receptionist_role';
-SHOW GRANTS FOR 'receptionist_role';
+-- Constraint tests (expected to fail).
+-- Run separately if needed.
+-- UPDATE appointment
+-- SET Status = 'Unknown'
+-- WHERE Appointment_ID = 1;
 
--- Patient role
--- I limited this role to reading three columns from the patient table.
--- This does not limit the role to one patient's own row.
-CREATE ROLE IF NOT EXISTS 'patient_role';
-GRANT SELECT (Patient_ID, First_Name, Last_Name)
-ON crownfield_ro_pl_demo.patient TO 'patient_role';
-SHOW GRANTS FOR 'patient_role';
+-- DELETE FROM clinic
+-- WHERE Clinic_ID = 1;
 
--- Hashing test
--- I used a made-up phone number to test SHA2.
-SELECT '07123456789' AS Original_Phone,
-       SHA2('07123456789', 256) AS Hashed_Phone;
 
--- Transaction test: ROLLBACK
--- I changed the status and then cancelled the change.
-START TRANSACTION;
-UPDATE appointment SET Status = 'Completed' WHERE Appointment_ID = 1;
-SELECT Appointment_ID, Status FROM appointment WHERE Appointment_ID = 1;
-ROLLBACK;
-SELECT Appointment_ID, Status FROM appointment WHERE Appointment_ID = 1;
+-- 7. Security roles
 
--- Transaction test: COMMIT
--- I saved the Scheduled status for Appointment 1.
-START TRANSACTION;
-UPDATE appointment SET Status = 'Scheduled' WHERE Appointment_ID = 1;
-COMMIT;
-SELECT Appointment_ID, Status FROM appointment WHERE Appointment_ID = 1;
+-- Admin role
+CREATE ROLE IF NOT EXISTS 'admin_role';
 
 GRANT ALL PRIVILEGES
-ON crownfield_ro_pl_demo.*
+ON crownfield_eye_hospital.*
 TO 'admin_role';
 
 SHOW GRANTS FOR 'admin_role';
 
+
 -- Doctor role
--- Doctors can view patient details and manage clinical records.
 CREATE ROLE IF NOT EXISTS 'doctor_role';
 
-GRANT SELECT ON crownfield_ro_pl_demo.patient TO 'doctor_role';
-GRANT SELECT ON crownfield_ro_pl_demo.clinician TO 'doctor_role';
-GRANT SELECT, UPDATE ON crownfield_ro_pl_demo.appointment TO 'doctor_role';
-GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.diagnosis TO 'doctor_role';
-GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.prescription TO 'doctor_role';
-GRANT SELECT, INSERT, UPDATE ON crownfield_ro_pl_demo.prescription_item TO 'doctor_role';
+GRANT SELECT
+ON crownfield_eye_hospital.patient
+TO 'doctor_role';
+
+GRANT SELECT
+ON crownfield_eye_hospital.clinician
+TO 'doctor_role';
+
+GRANT SELECT, UPDATE
+ON crownfield_eye_hospital.appointment
+TO 'doctor_role';
+
+GRANT SELECT, INSERT, UPDATE
+ON crownfield_eye_hospital.diagnosis
+TO 'doctor_role';
+
+GRANT SELECT, INSERT, UPDATE
+ON crownfield_eye_hospital.prescription
+TO 'doctor_role';
+
+GRANT SELECT, INSERT, UPDATE
+ON crownfield_eye_hospital.prescription_item
+TO 'doctor_role';
 
 SHOW GRANTS FOR 'doctor_role';
+
+
+-- Receptionist role
+-- Manage patients and appointments, and view clinics.
+CREATE ROLE IF NOT EXISTS 'hospital_receptionist';
+
+GRANT SELECT, INSERT, UPDATE
+ON crownfield_eye_hospital.appointment
+TO 'hospital_receptionist';
+
+GRANT SELECT, INSERT, UPDATE
+ON crownfield_eye_hospital.patient
+TO 'hospital_receptionist';
+
+GRANT SELECT
+ON crownfield_eye_hospital.clinic
+TO 'hospital_receptionist';
+
+SHOW GRANTS FOR 'hospital_receptionist';
+
+
+-- Patient role
+-- Allow reading only three patient columns.
+-- This does not restrict access to the patient's own row.
+CREATE ROLE IF NOT EXISTS 'hospital_patient';
+
+GRANT SELECT (Patient_ID, First_Name, Last_Name)
+ON crownfield_eye_hospital.patient
+TO 'hospital_patient';
+
+SHOW GRANTS FOR 'hospital_patient';
+
+
+-- 8. Hashing test
+-- Demonstrate SHA2-256 using a fictional phone number.
+SELECT '07123456789' AS Original_Phone,
+       SHA2('07123456789', 256) AS Hashed_Phone;
+
+
+-- 9. Transaction test: ROLLBACK
+-- Reverse a temporary appointment status change.
+START TRANSACTION;
+
+UPDATE appointment
+SET Status = 'Completed'
+WHERE Appointment_ID = 1;
+
+SELECT Appointment_ID, Status
+FROM appointment
+WHERE Appointment_ID = 1;
+
+ROLLBACK;
+
+SELECT Appointment_ID, Status
+FROM appointment
+WHERE Appointment_ID = 1;
+
+
+-- 10. Transaction test: COMMIT
+-- Save the Scheduled status for Appointment 1.
+START TRANSACTION;
+
+UPDATE appointment
+SET Status = 'Scheduled'
+WHERE Appointment_ID = 1;
+
+COMMIT;
+
+SELECT Appointment_ID, Status
+FROM appointment
+WHERE Appointment_ID = 1;
